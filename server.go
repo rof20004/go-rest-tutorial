@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
-	"github.com/rof20004/go-rest-tutorial/controllers"
+	"github.com/rof20004/go-rest-tutorial/api/controllers"
 	"gopkg.in/mgo.v2"
 )
 
