@@ -21,8 +21,8 @@ func NewUserController(s *mgo.Session) *UserController {
 	return &UserController{s}
 }
 
-// ListUser retrieves all users resource
-func (uc UserController) ListUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+// ListUsers retrieves all users resource
+func (uc UserController) ListUsers(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	// Stub user
 	users := []models.User{}
 
