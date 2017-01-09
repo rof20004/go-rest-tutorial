@@ -11,6 +11,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+// Database connection
 func getSession() *mgo.Session {
 	// Connect to our local mongo
 	s, err := mgo.Dial("mongodb://localhost:27017")
