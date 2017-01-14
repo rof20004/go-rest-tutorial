@@ -6,7 +6,9 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"golang.org/x/net/websocket"
+	"encoding/json"
+
+	"github.com/gorilla/websocket"
 )
 
 // SocketController main
@@ -17,46 +19,43 @@ func NewSocketController() *SocketController {
 	return &SocketController{}
 }
 
+var upgrader = websocket.Upgrader{
+	ReadBufferSize:  1024,
+	WriteBufferSize: 1024,
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
+}
+
 // Socket websocket
 func (s SocketController) Socket(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	websocket.Handler(SocketHandler).ServeHTTP(w, r)
-}
-
-// Echo websocket
-func (s SocketController) Echo(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	websocket.Handler(EchoHandler).ServeHTTP(w, r)
-}
-
-// SocketHandler Send a buffer to socket
-func SocketHandler(ws *websocket.Conn) {
-	var in []byte
-	if err := websocket.Message.Receive(ws, &in); err != nil {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-	fmt.Printf("Received: %s\n", string(in))
-	websocket.Message.Send(ws, in)
-}
 
-// EchoHandler function
-func EchoHandler(ws *websocket.Conn) {
-	var err error
+	type Reply struct {
+		ID   int    `json:"id"`
+		Name string `json:"name"`
+	}
+
+	obj := &Reply{}
 
 	for {
-		var reply string
-
-		if err = websocket.Message.Receive(ws, &reply); err != nil {
-			fmt.Println("Can't receive")
-			break
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			return
 		}
 
-		fmt.Println("Received back from client: " + reply)
+		if error := json.Unmarshal(p, obj); error != nil {
+			return
+		}
 
-		msg := "Received:  " + reply
-		fmt.Println("Sending to client: " + msg)
+		r, _ := json.Marshal(obj)
 
-		if err = websocket.Message.Send(ws, msg); err != nil {
-			fmt.Println("Can't send")
-			break
+		if err = conn.WriteMessage(messageType, r); err != nil {
+			return
 		}
 	}
 }

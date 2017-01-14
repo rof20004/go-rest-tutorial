@@ -70,8 +70,8 @@ func main() {
 
 	// Websocket controller
 	wsc := controllers.NewSocketController()
-	r.GET("/enviar", wsc.Socket)
-	r.GET("/enviarReceber", wsc.Echo)
+	// r.GET("/enviar", wsc.Socket)
+	r.GET("/enviarReceber", wsc.Socket)
 
 	// User controller
 	uc := controllers.NewUserController(getSession())
