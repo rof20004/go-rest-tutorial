@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"log"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/julienschmidt/httprouter"
@@ -66,6 +68,11 @@ func main() {
 	sc := controllers.NewSecurityController()
 	r.GET("/get-token", sc.GetTokenHandler)
 
+	// Websocket controller
+	wsc := controllers.NewSocketController()
+	r.GET("/enviar", wsc.Socket)
+	r.GET("/enviarReceber", wsc.Echo)
+
 	// Get a UserController instance
 	uc := controllers.NewUserController(getSession())
 	r.GET("/users", AuthRequest(uc.ListUsers))
@@ -74,5 +81,5 @@ func main() {
 	r.DELETE("/user/:id", uc.RemoveUser)
 
 	// Fire up the server
-	http.ListenAndServe("localhost:3000", r)
+	log.Fatal(http.ListenAndServe(":3000", r))
 }
