@@ -64,7 +64,7 @@ func main() {
 	// Instantiate a new router
 	r := httprouter.New()
 
-	// Generate JWT token
+	// Security controller
 	sc := controllers.NewSecurityController()
 	r.GET("/get-token", sc.GetTokenHandler)
 
@@ -73,7 +73,7 @@ func main() {
 	r.GET("/enviar", wsc.Socket)
 	r.GET("/enviarReceber", wsc.Echo)
 
-	// Get a UserController instance
+	// User controller
 	uc := controllers.NewUserController(getSession())
 	r.GET("/users", AuthRequest(uc.ListUsers))
 	r.GET("/user/:id", uc.GetUser)
