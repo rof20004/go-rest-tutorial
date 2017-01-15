@@ -102,13 +102,9 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, p ht
 		return
 	}
 
-	// Marshal provided interface into JSON structure
-	uj, _ := json.Marshal(u)
-
 	// Write content-type, statuscode, payload
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	fmt.Fprintf(w, "%s\n", uj)
 }
 
 // RemoveUser removes an existing user resource
