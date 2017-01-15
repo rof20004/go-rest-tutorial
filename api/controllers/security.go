@@ -26,7 +26,7 @@ func (sc *SecurityController) GetTokenHandler(w http.ResponseWriter, r *http.Req
 	claims["admin"] = true
 	claims["name"] = "Rodolfo Azevedo"
 	claims["iat"] = time.Now().Unix()
-	claims["exp"] = time.Now().Add(time.Minute * 2).Unix()
+	claims["exp"] = time.Now().Add(time.Minute * 10).Unix()
 
 	// Create the token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claims)

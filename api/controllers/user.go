@@ -23,11 +23,15 @@ func NewUserController(s *mgo.Session) *UserController {
 
 // ListUsers retrieves all users resource
 func (uc UserController) ListUsers(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	// Copy session database
+	session := uc.session.Copy()
+	defer session.Close()
+
 	// Stub user
 	users := []models.User{}
 
 	// Fetch user
-	if err := uc.session.DB("go-rest-tutorial").C("users").Find(nil).All(&users); err != nil {
+	if err := session.DB("go-rest-tutorial").C("users").Find(nil).All(&users); err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -43,6 +47,10 @@ func (uc UserController) ListUsers(w http.ResponseWriter, r *http.Request, p htt
 
 // GetUser retrieves an individual user resource
 func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	// Copy session database
+	session := uc.session.Copy()
+	defer session.Close()
+
 	// Grab id
 	id := p.ByName("id")
 
@@ -59,7 +67,7 @@ func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httpr
 	u := models.User{}
 
 	// Fetch user
-	if err := uc.session.DB("go-rest-tutorial").C("users").FindId(oid).One(&u); err != nil {
+	if err := session.DB("go-rest-tutorial").C("users").FindId(oid).One(&u); err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -75,6 +83,10 @@ func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httpr
 
 // CreateUser creates a new user resource
 func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	// Copy session database
+	session := uc.session.Copy()
+	defer session.Close()
+
 	// Stub an user to be populated from the body
 	u := models.User{}
 
@@ -85,7 +97,10 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, p ht
 	u.ID = bson.NewObjectId()
 
 	// Write the user to mongo
-	uc.session.DB("go-rest-tutorial").C("users").Insert(u)
+	if err := session.DB("go-rest-tutorial").C("users").Insert(u); err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 
 	// Marshal provided interface into JSON structure
 	uj, _ := json.Marshal(u)
@@ -98,6 +113,10 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, p ht
 
 // RemoveUser removes an existing user resource
 func (uc UserController) RemoveUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	// Copy session database
+	session := uc.session.Copy()
+	defer session.Close()
+
 	// Grab id
 	id := p.ByName("id")
 
@@ -111,7 +130,7 @@ func (uc UserController) RemoveUser(w http.ResponseWriter, r *http.Request, p ht
 	oid := bson.ObjectIdHex(id)
 
 	// Remove user
-	if err := uc.session.DB("go-rest-tutorial").C("users").RemoveId(oid); err != nil {
+	if err := session.DB("go-rest-tutorial").C("users").RemoveId(oid); err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

@@ -6,6 +6,8 @@ import (
 
 	"log"
 
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/julienschmidt/httprouter"
@@ -20,8 +22,11 @@ func getSession() *mgo.Session {
 
 	// Check if connection error, is mongo running?
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
+
+	s.SetSyncTimeout(time.Second * 5)
+	s.SetSocketTimeout(time.Second * 5)
 
 	return s
 }
