@@ -23,8 +23,6 @@ func NewSecurityController() *SecurityController {
 func (sc *SecurityController) GetTokenHandler(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	// Set token claims
 	claims := make(jwt.MapClaims)
-	claims["admin"] = true
-	claims["name"] = "Rodolfo Azevedo"
 	claims["iat"] = time.Now().Unix()
 	claims["exp"] = time.Now().Add(time.Minute * 10).Unix()
 
