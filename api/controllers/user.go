@@ -40,7 +40,7 @@ func (uc UserController) ListUsers(w http.ResponseWriter, r *http.Request, p htt
 	uj, _ := json.Marshal(users)
 
 	// Write content-type, statuscode, payload
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "%s\n", uj)
 }
@@ -76,7 +76,7 @@ func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httpr
 	uj, _ := json.Marshal(u)
 
 	// Write content-type, statuscode, payload
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "%s\n", uj)
 }
@@ -103,7 +103,7 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, p ht
 	}
 
 	// Write content-type, statuscode, payload
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusCreated)
 }
 
